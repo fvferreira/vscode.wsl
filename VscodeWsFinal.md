@@ -1,11 +1,8 @@
-# Tutorial: Uso do Visual Studio Code com o Subsistema do Windows para Linux (WSL)
+# Uso do Visual Studio Code com o Subsistema do Windows para Linux (WSL)
 
-**Autor:** [Seu Nome]  
-**Disciplina:** [Nome da disciplina]  
-**Professor:** [Nome do professor]  
-**Data:** [dd/mm/aaaa]
-
----
+**Autor:** JOÃO VICTOR FERREIRA DA SILVA E  FRANCISCO VINÍCIUS DE BRITO ALENCAR  
+**Professor:** BRUNO FRANCISCO XAVIER  
+**Data:** 03/11/2025
 
 ## Sumário
 1. [Introdução](#introdução)
@@ -21,11 +18,11 @@
 11. [Conclusão](#conclusão)
 12. [Referências](#referências)
 
----
+
 
 ## 1. Introdução
 
-O **Visual Studio Code (VS Code)** é um editor de código-fonte leve, rápido e highly extensível.  
+O **Visual Studio Code (VS Code)** é um editor de código-fonte leve e rápido. 
 Com o **Subsistema do Windows para Linux (WSL)**, é possível executar um ambiente Linux dentro do Windows sem necessidade de máquina virtual ou dual boot.
 
 A integração entre VS Code e WSL permite **desenvolver, depurar e executar projetos Linux diretamente no Windows**, mantendo o desempenho e as ferramentas nativas de ambos os sistemas.
@@ -45,7 +42,6 @@ Há duas versões principais:
 
 Você pode instalar distribuições como **Ubuntu, Debian, Kali Linux, Fedora**, entre outras, diretamente pela Microsoft Store.
 
----
 
 ## 3. Por que usar o VS Code com o WSL
 
@@ -58,9 +54,7 @@ Usar o VS Code junto ao WSL oferece diversas vantagens:
 - Integração total com **Git** e controle de versão.  
 - Terminal integrado que pode ser configurado para abrir diretamente no Linux.
 
-![VS Code + WSL](https://learn.microsoft.com/pt-br/windows/wsl/media/vscode/remote-wsl.png)
 
----
 
 ## 4. Pré-requisitos
 
@@ -77,7 +71,7 @@ Antes de começar, você deve ter:
 
 3. **Visual Studio Code instalado no Windows** - Baixe em: [https://code.visualstudio.com](https://code.visualstudio.com)
 
----
+
 
 ## 5. Instalação do VS Code e Extensão WSL
 
@@ -88,11 +82,10 @@ Baixe e instale o VS Code para **Windows**. Durante a instalação, na tela "Tar
 No VS Code, acesse o menu de **Extensões** (ícone de blocos ou `Ctrl+Shift+X`).
 Na barra de pesquisa, digite `WSL` e instale a extensão oficial **"WSL"** publicada pela Microsoft.
 
-![Instalação da Extensão WSL](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/media/vscode-wsl-extension.png)
+
 
 Esta extensão faz parte do pacote "Remote Development", que é o que permite a arquitetura cliente-servidor.
 
----
 
 ## 6. Abrindo Projetos no WSL com o VS Code
 
@@ -123,9 +116,7 @@ Este é o fluxo de trabalho mais rápido e comum.
 
 **Verificando a Conexão:** No canto inferior esquerdo do VS Code, você verá um indicador verde mostrando que está conectado ao WSL: `WSL: Ubuntu` (ou sua distro).
 
-![Indicador de Conexão WSL](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/media/vscode-wsl-connected.png)
 
----
 
 ## 7. Arquitetura Cliente-Servidor do VS Code + WSL
 
@@ -183,15 +174,15 @@ O VS Code se integra perfeitamente com o Git instalado *dentro* do WSL, não com
 
 ## 10. Boas Práticas e Dicas
 
-- **Armazenamento de Arquivos (Desempenho):** Sempre armazene os arquivos do seu projeto **dentro do sistema de arquivos do Linux** (ex: `/home/seu_usuario/projetos`). Evite trabalhar em arquivos que estão no sistema do Windows (ex: `/mnt/c/Users/SeuUsuario/Documentos`). O acesso entre os sistemas de arquivos (WSL 2 para Windows) é lento e pode causar gargalos.
+**Armazenamento de Arquivos (Desempenho):** Sempre armazene os arquivos do seu projeto **dentro do sistema de arquivos do Linux** (ex: `/home/seu_usuario/projetos`). Evite trabalhar em arquivos que estão no sistema do Windows (ex: `/mnt/c/Users/SeuUsuario/Documentos`). O acesso entre os sistemas de arquivos (WSL 2 para Windows) é lento e pode causar gargalos.
 
-- **Integridade dos Arquivos:** **NUNCA** use o Windows File Explorer ou aplicativos do Windows (como Bloco de Notas) para modificar arquivos que estão *dentro* do WSL (ex: `/home/seu_usuario`). Isso pode corromper os metadados e permissões dos arquivos Linux. Use sempre o VS Code conectado ao WSL ou um editor de terminal (como `nano` ou `vim`) para editar esses arquivos.
+**Integridade dos Arquivos:** **NUNCA** use o Windows File Explorer ou aplicativos do Windows (como Bloco de Notas) para modificar arquivos que estão *dentro* do WSL (ex: `/home/seu_usuario`). Isso pode corromper os metadados e permissões dos arquivos Linux. Use sempre o VS Code conectado ao WSL ou um editor de terminal (como `nano` ou `vim`) para editar esses arquivos.
 
-- **Comando `code .`:** Acostume-se a abrir seus projetos. É o método mais rápido e garante que você esteja no contexto correto.
+**Comando `code .`:** Acostume-se a abrir seus projetos. É o método mais rápido e garante que você esteja no contexto correto.
 
-- **Terminal Integrado:** Use o terminal integrado do VS Code (`Ctrl+` \` ) para todos os seus comandos. Ele já estará 100% conectado ao shell da sua distribuição Linux no WSL.
+**Terminal Integrado:** Use o terminal integrado do VS Code (`Ctrl+` \` ) para todos os seus comandos. Ele já estará 100% conectado ao shell da sua distribuição Linux no WSL.
 
----
+
 
 ## 11. Conclusão
 
@@ -199,12 +190,11 @@ A integração do VS Code com o WSL 2 oferece o ambiente de desenvolvimento Linu
 
 Ao adotar a arquitetura cliente-servidor e seguir as boas práticas de armazenamento de arquivos, o desenvolvedor obtém uma experiência fluida, rápida e totalmente integrada, combinando as melhores ferramentas de ambos os sistemas operacionais sem a sobrecarga de uma máquina virtual tradicional.
 
----
 
 ## 12. Referências
 
-- **Documentação Oficial (Referência Principal):** [https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-vscode](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-vscode)
+**Documentação Oficial (Referência Principal):** [https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-vscode](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-vscode)
 
-- **Documentação do VS Code - Remote Development:** [https://code.visualstudio.com/docs/remote/wsl](https://code.visualstudio.com/docs/remote/wsl)
+**Documentação do VS Code - Remote Development:** [https://code.visualstudio.com/docs/remote/wsl](https://code.visualstudio.com/docs/remote/wsl)
 
-- **Boas Práticas de Git no WSL:** [https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-git](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-git)
+**Boas Práticas de Git no WSL:** [https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-git](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-git)
