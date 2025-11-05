@@ -1,200 +1,185 @@
-# Uso do Visual Studio Code com o Subsistema do Windows para Linux (WSL)
-
-**Autor:** JOÃO VICTOR FERREIRA DA SILVA E  FRANCISCO VINÍCIUS DE BRITO ALENCAR  
-**Professor:** BRUNO FRANCISCO XAVIER  
-**Data:** 03/11/2025
-
-## Sumário
-1. [Introdução](#introdução)
-2. [O que é o WSL](#o-que-é-o-wsl)
-3. [Por que usar o VS Code com o WSL](#por-que-usar-o-vs-code-com-o-wsl)
-4. [Pré-requisitos](#pré-requisitos)
-5. [Instalação do VS Code e Extensão WSL](#instalação-do-vs-code-e-extensão-wsl)
-6. [Abrindo Projetos no WSL com o VS Code](#abrindo-projetos-no-wsl-com-o-vs-code)
-7. [Arquitetura Cliente-Servidor do VS Code + WSL](#arquitetura-cliente-servidor-do-vs-code--wsl)
-8. [Gerenciamento de Extensões no WSL](#gerenciamento-de-extensões-no-wsl)
-9. [Uso do Git e Controle de Versão](#uso-do-git-e-controle-de-versão)
-10. [Boas Práticas e Dicas](#boas-práticas-e-dicas)
-11. [Conclusão](#conclusão)
-12. [Referências](#referências)
-
-
-
-## 1. Introdução
-
-O **Visual Studio Code (VS Code)** é um editor de código-fonte leve e rápido. 
-Com o **Subsistema do Windows para Linux (WSL)**, é possível executar um ambiente Linux dentro do Windows sem necessidade de máquina virtual ou dual boot.
-
-A integração entre VS Code e WSL permite **desenvolver, depurar e executar projetos Linux diretamente no Windows**, mantendo o desempenho e as ferramentas nativas de ambos os sistemas.
-
-> Referência oficial: [Microsoft Learn – Usar o VS Code com o WSL](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-vscode)
-
+---
+title: "WSL/Ubuntu"
+lang: pt-BR
+description: "Configurar ambiente de desenvolvimento C no Windows usando WSL(Ubuntu)"
+author: ["João Victor Ferreira da Silva", "Francisco Vinícius de Brito Alencar"]
+date: "2025-11-04" 
+categories:
+  - C
+  - WSL
+  - VS Code
+  - GCC
+  - Ubunto
 ---
 
-## 2. O que é o WSL
+## Introdução
 
-O **Windows Subsystem for Linux (WSL)** é uma camada de compatibilidade que permite executar distribuições Linux nativamente no Windows.  
-Com ele, você pode usar terminal, ferramentas, pacotes e bibliotecas do Linux sem sair do Windows.
+Para entender nosso objetivo, precisamos saber o que é cada ferramenta:
 
-Há duas versões principais:
-- **WSL 1:** mais simples, usa tradução de chamadas do sistema.  
-- **WSL 2:** usa um kernel Linux completo, oferecendo melhor compatibilidade e desempenho (recomendado e padrão atual).
+**WSL (Windows Subsystem for Linux):** É uma camada de compatibilidade criada pela Microsoft que permite executar binários Linux (como programas e ferramentas de linha de comando) diretamente no Windows. O WSL 2, versão mais recente, utiliza um kernel Linux real, oferecendo desempenho e compatibilidade quase nativos.
+**Ubuntu:** É uma das distribuições Linux mais populares e amigáveis para iniciantes. Ao instalar o WSL, podemos escolher o Ubuntu como nosso "sistema operacional" Linux que rodará dentro do Windows.
+**GCC (GNU Compiler Collection):** É o conjunto de compiladores padrão para a maioria dos sistemas Unix-like. Usaremos seu compilador C (também chamado `gcc`) para transformar nosso código-fonte `.c` em programas executáveis.
+**VS Code (Visual Studio Code):** É um editor de código-fonte leve, gratuito e extremamente poderoso da Microsoft. Sua maior força são as extensões, e usaremos uma específica (a extensão "WSL") para que nosso editor, rodando no Windows, possa se comunicar diretamente com os arquivos e ferramentas dentro do Ubuntu.
 
-Você pode instalar distribuições como **Ubuntu, Debian, Kali Linux, Fedora**, entre outras, diretamente pela Microsoft Store.
+## Instalação e Configuração
 
+Vamos configurar o ambiente do zero.
 
-## 3. Por que usar o VS Code com o WSL
+### PASSO 1 Instalar o WSL e o Ubuntu
+::: {.callout-important}
+Para que essa VM funcione, é necessário que a virtualização por hardware esteja ativada no processador e na BIOS/UEFI.
+No Windows:
 
-Usar o VS Code junto ao WSL oferece diversas vantagens:
+Pressione Ctrl + Shift + Esc para abrir o Gerenciador de Tarefas.
 
-- Desenvolvimento em ambiente **nativo Linux** com o conforto do Windows.  
-- Acesso às **ferramentas Linux** (gcc, apt, bash, etc.).  
-- Possibilidade de depuração e execução direta no WSL.  
-- Evita problemas de compatibilidade entre caminhos de arquivos Windows/Linux.  
-- Integração total com **Git** e controle de versão.  
-- Terminal integrado que pode ser configurado para abrir diretamente no Linux.
+Vá até a aba Desempenho → CPU.
 
+Verifique a linha "Virtualização":
 
+Se aparecer “Habilitada”, está tudo certo ✅
 
-## 4. Pré-requisitos
+Se aparecer “Desabilitada”, será preciso ativar na BIOS/UEFI ⚙️
 
-Antes de começar, você deve ter:
+⚙️ Como ativar a virtualização na BIOS/UEFI
 
-1. **WSL instalado** - Execute no PowerShell (como Administrador):
-     ```bash
-     wsl --install
-     ```
-   - Reinicie o computador após a instalação.
+Reinicie o computador e pressione a tecla de acesso à BIOS (geralmente Del, F2, F10 ou Esc, dependendo da marca).
+Procure por uma opção chamada:
+Intel Virtualization Technology (VT-x) — para processadores Intel, ou
+SVM Mode / AMD-V — para processadores AMD.
+Ative a opção.
 
-2. **Uma distribuição Linux instalada** (ex: Ubuntu).  
-   O comando `wsl --install` geralmente instala o Ubuntu por padrão.
+Salve as alterações e reinicie o computador.
+:::   
 
-3. **Visual Studio Code instalado no Windows** - Baixe em: [https://code.visualstudio.com](https://code.visualstudio.com)
+1.  Abra o **PowerShell** ou **Prompt de Comando (CMD)** como **Administrador**.
+2.  Digite o seguinte comando:
 
-
-
-## 5. Instalação do VS Code e Extensão WSL
-
-### 1. Instalar o VS Code
-Baixe e instale o VS Code para **Windows**. Durante a instalação, na tela "Tarefas Adicionais", é crucial marcar a opção **"Adicionar ao PATH"**. Isso permite que o WSL chame o VS Code do Windows usando o comando `code`.
-
-### 2. Instalar a extensão WSL
-No VS Code, acesse o menu de **Extensões** (ícone de blocos ou `Ctrl+Shift+X`).
-Na barra de pesquisa, digite `WSL` e instale a extensão oficial **"WSL"** publicada pela Microsoft.
-
-
-
-Esta extensão faz parte do pacote "Remote Development", que é o que permite a arquitetura cliente-servidor.
-
-
-## 6. Abrindo Projetos no WSL com o VS Code
-
-Existem duas formas principais de iniciar a conexão.
-
-### Método 1: Via Terminal WSL (Recomendado)
-
-Este é o fluxo de trabalho mais rápido e comum.
-
-1.  Abra o terminal da sua distribuição Linux (Ex: "Ubuntu" no Menu Iniciar).
-2.  Navegue até a pasta do seu projeto **dentro do sistema de arquivos do Linux** (ex: `/home/seu_usuario/projetos/meu-app`).
     ```bash
-    cd ~/projetos/meu-app
+    wsl --install
     ```
-3.  Execute o comando:
+3.  Este comando fará tudo automaticamente: habilitará os recursos necessários do Windows, baixará o kernel Linux mais recente e instalará a distribuição **Ubuntu** por padrão.
+4. **Uma distribuição Linux instalada** (ex: Ubuntu).  
+   Você pode instalar pela Microsoft Store ou via terminal.
+
+5.  Após a conclusão, **reinicie o seu computador**.
+6.  Ao reiniciar, o Ubuntu será iniciado pela primeira vez para finalizar a configuração. Você precisará criar um **nome de usuário** e uma **senha** para o seu ambiente Linux. (Nota: Esta senha não tem relação com sua senha do Windows).
+
+### PASSO 2 Atualizar o Ubuntu e Instalar o GCC
+
+Agora que temos o Ubuntu, precisamos instalar as ferramentas de desenvolvimento C.
+
+1.  Abra o terminal do Ubuntu (pelo Menu Iniciar, procure por "Ubuntu").
+2.  Primeiro, vamos atualizar os repositórios de pacotes:
+
+    ```bash
+    #Atualiza a lista de pacotes disponíveis
+    sudo apt update
+    
+    #Atualiza os pacotes já instalados para suas últimas versões
+    sudo apt upgrade
+    ```
+    *Comentário: **sudo** significa "Super User Do", e é usado para executar comandos com privilégios de administrador. Você precisará digitar a senha do Linux que acabou de criar.*
+
+3.  Agora, instale o `build-essential`. Este pacote inclui o `gcc`, o `make` e outras ferramentas essenciais para compilação.
+
+    ```bash
+    # Instala o compilador GCC e outras ferramentas essenciais
+    sudo apt install build-essential
+    ```
+4.  Para verificar se o GCC foi instalado corretamente, execute:
+
+    ```bash
+    gcc --version
+    ```
+    *Você deverá ver uma mensagem com a versão do GCC.*
+
+### PASSO 3 Instalar e Configurar o VS Code
+
+1.  **Instale o VS Code no Windows** (e não dentro do Ubuntu). Baixe-o diretamente do site oficial https://code.visualstudio.com/.
+2.  Abra o VS Code.
+3.  Vá até a aba de **Extensões** (ícone de blocos no menu lateral ou `Ctrl+Shift+X`).
+4.  Procure e instale a extensão chamada **"WSL"** (publicada pela Microsoft).
+
+### PASSO 4 (O "Hello, World!")
+
+1.  **Feche** qualquer instância do VS Code que esteja aberta.
+2.  Abra o seu **terminal do Ubuntu**.
+3.  Vamos criar um diretório para nossos projetos C *dentro* do Linux (isso é importante para o desempenho):
+
+    ```bash
+    #Cria um diretório chamado 'projetos_c' na sua pasta 'home'
+    mkdir ~/projetos_c
+    
+    #Entra no diretório recém-criado
+    cd ~/projetos_c
+    ```
+4.  Agora, dentro deste diretório no terminal do Ubuntu, digite o comando mágico:
+
     ```bash
     code .
     ```
-4.  O VS Code (do Windows) será iniciado, e ele se conectará automaticamente ao "Servidor VS Code" rodando dentro do WSL, abrindo a pasta atual.
+5.  *O que acontece?*
+    * O Windows abrirá o VS Code.
+    * O VS Code, usando a extensão WSL, se conectará ao seu ambiente Ubuntu. Você verá uma indicação "WSL: Ubuntu" no canto inferior esquerdo do editor.
+    * O VS Code estará "enxergando" os arquivos de dentro do diretório `~/projetos_c` do Ubuntu.
 
-### Método 2: Via Paleta de Comandos do VS Code
+6.  **Criando o "Hello, World!"**
+    No explorador de arquivos do VS Code (menu lateral), crie um novo arquivo chamado `hello.c`.
+    Digite o seguinte código:
 
-1.  Abra o VS Code (no Windows).
-2.  Pressione `Ctrl+Shift+P` para abrir a Paleta de Comandos.
-3.  Digite `WSL: Connect to WSL` e selecione a opção.
-4.  Uma nova janela do VS Code será aberta, já conectada ao WSL.
-5.  Você pode então usar "Arquivo" > "Abrir Pasta..." para navegar até seu diretório de projeto no Linux (ex: `/home/seu_usuario/projetos`).
-
-**Verificando a Conexão:** No canto inferior esquerdo do VS Code, você verá um indicador verde mostrando que está conectado ao WSL: `WSL: Ubuntu` (ou sua distro).
-
-
-
-## 7. Arquitetura Cliente-Servidor do VS Code + WSL
-
-A integração não é um simples "abrir arquivo". A extensão WSL divide o VS Code em uma arquitetura de dois componentes:
-
-1.  **Cliente (Frontend):** É a interface de usuário do VS Code que você vê e interage, rodando no **Windows**.
-2.  **Servidor (Backend):** É um "Servidor VS Code" leve que é instalado e executado **dentro do WSL (Linux)**.
-
-Este servidor no Linux é quem de fato:
-- Executa o terminal integrado (bash, zsh, etc.).
-- Analisa o código (IntelliSense, linting).
-- Gerencia e executa as extensões de linguagem (Python, Node.js, etc.).
-- Executa o depurador.
-- Lida com os comandos do Git.
-
-Isso garante que todas as operações intensivas ocorram **nativamente no Linux**, proporcionando desempenho total, enquanto você usa a interface gráfica fluida no Windows.
-
----
-
-## 8. Gerenciamento de Extensões no WSL
-
-Com a arquitetura cliente-servidor, as extensões também são divididas:
-
-- **Extensões de UI (Locais):** Coisas que mudam a aparência do editor, como **Temas de Cores** e **Pacotes de Ícones**. Elas são instaladas **uma vez, no VS Code do Windows**.
-- **Extensões de Workspace (Remotas):** Coisas que interagem com seu código, como **suporte a linguagens (Python, Go)**, **linters (ESLint)** e **depuradores**. Elas precisam ser instaladas **"no WSL"**.
-
-Ao se conectar ao WSL e abrir o painel de Extensões, você verá duas seções: "LOCAL - INSTALADAS" e "WSL: [SUA DISTRO] - INSTALADAS".
-
-Se você tem uma extensão de linguagem (como "Python") instalada localmente, o VS Code mostrará um botão verde para "Instalar no WSL". Você deve clicar nele para que a extensão funcione corretamente no seu ambiente Linux.
-
----
-
-## 9. Uso do Git e Controle de Versão
-
-O VS Code se integra perfeitamente com o Git instalado *dentro* do WSL, não com o Git do Windows.
-
-1.  **Instale (ou verifique) o Git no WSL:**
-    A maioria das distribuições já vem com o Git, mas é bom garantir:
-    ```bash
-    sudo apt update
-    sudo apt install git
+    ```c
+    // hello.c
+    // Nosso primeiro programa em C no ambiente WSL
+    
+    #include <stdio.h> // Inclui a biblioteca de Input/Output Padrão
+    
+    int main() {
+        // Imprime a string "Hello, WSL!" no console
+        printf("Hello, WSL!\n");
+        
+        return 0; // Retorna 0 para indicar que o programa rodou com sucesso
+    }
     ```
 
-2.  **Configure o Git no WSL:**
-    É fundamental configurar seu nome e e-mail *dentro* do Linux, pois é este Git que o VS Code usará.
-    ```bash
-    git config --global user.name "Seu Nome"
-    git config --global user.email "seu.email@exemplo.com"
-    ```
+7.  **Compilando e Executando**
+    * Abra o terminal integrado do VS Code (`Ctrl+'` ou `Terminal > Novo Terminal`).
+    * **Observe:** Este *não* é um terminal do Windows. É um terminal `bash` rodando diretamente no seu Ubuntu!
+    * Para compilar, digite:
 
-3.  **Fluxo de Trabalho:**
-    Pronto! Ao abrir a aba "Controle do Código-Fonte" (`Ctrl+Shift+G`) no VS Code, ele detectará automaticamente o repositório Git no WSL e todos os comandos (commit, push, pull, branch) funcionarão nativamente.
+    ```bash
+    # O comando gcc compila o arquivo 'hello.c'
+    # A flag '-o hello' diz para criar um arquivo executável chamado 'hello'
+    gcc hello.c -o hello
+    ```
+    * Se você olhar no explorador de arquivos, verá um novo arquivo `hello` (com ícone de executável).
+    * Para executar o programa, digite:
+
+    ```bash
+    # O './' é necessário para dizer ao terminal para executar o arquivo
+    # 'hello' que está neste diretório atual.
+    ./hello
+    ```
+    * **Saída:** Você verá a mensagem `Hello, WSL!` impressa no seu terminal.
+
+## 4. Boas Práticas 
+
+* **Armadilha do Sistema de Arquivos:** **Sempre** armazene seus projetos Linux (como seu código C) *dentro* do sistema de arquivos do Ubuntu (ex: `/home/seu_usuario/projetos_c`). **Não** os armazene no seu C: do Windows (ex: `/mnt/c/Users/...`). Acessar arquivos do Windows a partir do Linux é muito lento e pode causar problemas de permissão.
+* **Terminal:** Use o terminal integrado do VS Code. Ele estará automaticamente conectado ao WSL, permitindo que você compile e execute sem sair do editor.
+* **Mantenha Atualizado:** Lembre-se de rodar `sudo apt update && sudo apt upgrade` de vez em quando no seu terminal Ubuntu para manter tudo seguro e atualizado.
 
 ---
 
-## 10. Boas Práticas e Dicas
+Nesta tutorial, você aprendeu
 
-**Armazenamento de Arquivos (Desempenho):** Sempre armazene os arquivos do seu projeto **dentro do sistema de arquivos do Linux** (ex: `/home/seu_usuario/projetos`). Evite trabalhar em arquivos que estão no sistema do Windows (ex: `/mnt/c/Users/SeuUsuario/Documentos`). O acesso entre os sistemas de arquivos (WSL 2 para Windows) é lento e pode causar gargalos.
+✅ Instalar o WSL e o Ubuntu
 
-**Integridade dos Arquivos:** **NUNCA** use o Windows File Explorer ou aplicativos do Windows (como Bloco de Notas) para modificar arquivos que estão *dentro* do WSL (ex: `/home/seu_usuario`). Isso pode corromper os metadados e permissões dos arquivos Linux. Use sempre o VS Code conectado ao WSL ou um editor de terminal (como `nano` ou `vim`) para editar esses arquivos.
+✅ Instalar e Configurar o VS Code
 
-**Comando `code .`:** Acostume-se a abrir seus projetos. É o método mais rápido e garante que você esteja no contexto correto.
+--- 
 
-**Terminal Integrado:** Use o terminal integrado do VS Code (`Ctrl+` \` ) para todos os seus comandos. Ele já estará 100% conectado ao shell da sua distribuição Linux no WSL.
+## 6. Links Úteis e Referências
 
-
-
-## 11. Conclusão
-
-A integração do VS Code com o WSL 2 oferece o ambiente de desenvolvimento Linux mais produtivo e de melhor desempenho disponível no Windows.
-
-Ao adotar a arquitetura cliente-servidor e seguir as boas práticas de armazenamento de arquivos, o desenvolvedor obtém uma experiência fluida, rápida e totalmente integrada, combinando as melhores ferramentas de ambos os sistemas operacionais sem a sobrecarga de uma máquina virtual tradicional.
-
-
-## 12. Referências
-
-**Documentação Oficial (Referência Principal):** [https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-vscode](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-vscode)
-
-**Documentação do VS Code - Remote Development:** [https://code.visualstudio.com/docs/remote/wsl](https://code.visualstudio.com/docs/remote/wsl)
-
-**Boas Práticas de Git no WSL:** [https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-git](https://learn.microsoft.com/pt-br/windows/wsl/tutorials/wsl-git)
+* Documentação Oficial do WSL na Microsoft (https://docs.microsoft.com/pt-br/windows/wsl/)
+* Documentação do VS Code para desenvolvimento em C++ (aplica-se ao C) (https://code.visualstudio.com/docs/cpp/config-wsl)
+* Manual Oficial do GCC (https://gcc.gnu.org/onlinedocs/)
+* Compilar Programas em C (https://brunofx-ufersa.github.io/reacomp/posts/compilation-clinux.html)
