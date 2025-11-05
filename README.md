@@ -1,16 +1,3 @@
----
-title: "WSL/Ubuntu"
-lang: pt-BR
-description: "Configurar ambiente de desenvolvimento C no Windows usando WSL(Ubuntu)"
-author: ["João Victor Ferreira da Silva", "Francisco Vinícius de Brito Alencar"]
-date: "2025-11-04" 
-categories:
-  - C
-  - WSL
-  - VS Code
-  - GCC
-  - Ubunto
----
 
 ## Introdução
 
